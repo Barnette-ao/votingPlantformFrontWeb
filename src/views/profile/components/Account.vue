@@ -1,10 +1,10 @@
 <template>
   <el-form>
     <el-form-item label="Name">
-      <el-input v-model.trim="user.name" />
+      <el-input v-model.trim="user.username" placeholder="Reset Username"/>
     </el-form-item>
-    <el-form-item label="Email">
-      <el-input v-model.trim="user.email" />
+    <el-form-item label="Introduction">
+      <el-input v-model.trim="user.introduction" placeholder="Reset Introduction"/>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submit">Update</el-button>
@@ -19,8 +19,9 @@ export default {
       type: Object,
       default: () => {
         return {
-          name: '',
-          email: ''
+          username: '',
+          password:'',
+          introduction: ''
         }
       }
     }

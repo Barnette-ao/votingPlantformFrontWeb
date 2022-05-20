@@ -21,10 +21,6 @@
 						<el-date-picker v-model="form.createdTime" type="datetime" placeholder="选择日期时间">
 						</el-date-picker>
 					</el-form-item>
-					<el-form-item label="是否开放" :label-width="formLabelWidth">
-						<el-switch v-model="form.isOpen" active-color="#13ce66" inactive-color="#ddd">
-						</el-switch>
-					</el-form-item>
 					<el-form-item label="投票规则程序" :label-width="formLabelWidth">
 						<codemirror ref="editor" v-model="form.program" :options="cmOptions" />
 					</el-form-item>
@@ -114,7 +110,6 @@
 					ruleCreator:"",
 					language: "",
 					createdTime: "",
-					isOpen: "",
 					dataExample: "",
 					program: ""
 				},

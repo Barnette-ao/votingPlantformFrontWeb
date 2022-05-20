@@ -20,10 +20,6 @@
           		<el-option label="管理员" value="admin"></el-option>
           	</el-select>
           </el-form-item>
-					<el-form-item label="是否是管理员" :label-width="formLabelWidth">
-						<el-switch v-model="form.isAdmin" active-color="#13ce66" inactive-color="#ddd">
-						</el-switch>
-					</el-form-item>
 					<el-form-item label="添加时间" :label-width="formLabelWidth">
 						<el-date-picker v-model="form.createdTime" type="datetime" placeholder="选择日期时间">
 						</el-date-picker>
@@ -42,11 +38,6 @@
 				</el-table-column>
         <el-table-column prop="roles" label="用户角色" width="180">
         </el-table-column>
-				<el-table-column prop="isAdmin" label="是否是管理员" width="180">
-          <template slot-scope="scope">
-          	<span>{{scope.row.isAdmin === true ? '是' : '否' }}</span>
-          </template>
-				</el-table-column>
 				<el-table-column prop="createdTime" label="添加时间" width="240">
 					<template slot-scope="scope">
 						<i class="el-icon-time"></i>

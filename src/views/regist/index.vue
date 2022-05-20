@@ -4,7 +4,7 @@
 
       <div class="title-container">
         <h3 class="title">
-          {{ $t('login.title') }}
+          {{ $t('login.registTitle') }}
         </h3>
         <lang-select class="set-language" />
       </div>
@@ -48,38 +48,51 @@
         </el-form-item>
       </el-tooltip>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">
-        {{ $t('login.logIn') }}
+      <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
+        <el-form-item prop="password">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input
+            :key="passwordType"
+            ref="password"
+            v-model="loginForm.confirmPassword"
+            :type="passwordType"
+            :placeholder="$t('login.confirmPassword')"
+            name="password"
+            tabindex="2"
+            autocomplete="on"
+            @keyup.native="checkCapslock"
+            @blur="capsTooltip = false"
+            @keyup.enter.native="handleLogin"
+          />
+          <span class="show-pwd" @click="showPwd">
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          </span>
+        </el-form-item>
+      </el-tooltip>
+
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="registNewUser">
+        {{ $t('login.regist') }}
       </el-button>
 
-<<<<<<< HEAD
-      <div style="position:relative">
-        <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click ="handleRegist">
+      <!-- <div style="position:relative">
+        <el-button :loading="loading" type="primary" style="width:30%;margin-bottom:30px;" @click.native.prevent="handleLogin">
           {{ $t('login.regist') }}
         </el-button>
-        <!-- <el-button class="thirdparty-button" type="primary" style="width:30%;margin-bottom:25px;" @click="showDialog=true">
-          {{ $t('login.thirdparty') }}
-        </el-button> -->
-      </div>
-=======
-      <!-- <div style="position:relative">
-        <div class="tips">
-          <span>{{ $t('login.username') }} : admin</span>
-          <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-        </div>
-        <div class="tips">
-          <span style="margin-right:18px;">
-            {{ $t('login.username') }} : editor
-          </span>
-          <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-        </div>
-
-        <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
+        <el-button class="thirdparty-button" type="primary" style="width:30%;margin-bottom:25px;" @click="showDialog=true">
           {{ $t('login.thirdparty') }}
         </el-button>
       </div> -->
->>>>>>> ae799dfee65dfa049c08578c9fe2da0108acb6d6
     </el-form>
+
+    <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog">
+      {{ $t('login.thirdpartyTips') }}
+      <br>
+      <br>
+      <br>
+      <social-sign />
+    </el-dialog>
   </div>
 </template>
 
@@ -87,6 +100,7 @@
 // import { validUsername } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './components/SocialSignin'
+import { createPlantformUser } from '@/api/user'
 
 export default {
   name: 'Login',
@@ -106,21 +120,39 @@ export default {
         callback()
       }
     }
+    const validateConfirmPassword = (rule, value, callback) => {
+      if (value.length < 6) {
+        callback(new Error('The password can not be less than 6 digits'))
+      } else {
+        callback()
+      }
+    }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: '',
+        password: '',
+        confirmPassword:''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        confirmPassword:[{ required: true, trigger: 'blur', validator: validateConfirmPassword }]
       },
       passwordType: 'password',
       capsTooltip: false,
       loading: false,
+      showDialog: false,
       redirect: undefined,
-      registRedirect:"/regist",
-      otherQuery: {}
+      otherQuery: {},
+      registUser:{
+        username:"",
+        roles:"user",
+        introduction:"",
+        createdTime:new Date(),
+        state:0,
+        isAdmin:false ,
+        password:""
+      }
     }
   },
   watch: {
@@ -164,32 +196,51 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm)
-            .then(() => {
-<<<<<<< HEAD
-              sessionStorage.setItem('userName',this.loginForm.username);
-              this.$store.dispatch('user/setUser',this.loginForm.username);
-=======
-              console.log("this.redirect:",this.redirect)
->>>>>>> ae799dfee65dfa049c08578c9fe2da0108acb6d6
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-              this.loading = false
-            })
-            .catch(() => {
-              this.loading = false
-            })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    handleRegist(){
-      this.$router.push({ path: this.registRedirect || '/', query: this.otherQuery })
+    // registNewUser() {
+    //   this.$refs.loginForm.validate(valid => {
+    //     if (valid) {
+
+    //       this.loading = true
+    //       this.$store.dispatch('user/login', this.loginForm)
+    //         .then(() => {
+    //           this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+    //           this.loading = false
+    //         })
+    //         .catch(() => {
+    //           this.loading = false
+    //         })
+    //     } else {
+    //       console.log('error submit!!')
+    //       return false
+    //     }
+    //   })
+    // },
+    registNewUser() {
+      if(this.loginForm.password !== this.loginForm.confirmPassword){
+      	this.$message({
+      		message: '密码输入前后不一致',
+      		type: 'error'
+      	});
+      }else{
+      	console.log("@@@注册用户信息",this.loginForm)
+        this.registUser.username = this.loginForm.username
+        this.registUser.password = this.loginForm.password
+        console.log("this.registUser:", this.registUser)
+      	createPlantformUser(this.registUser).then(response => {
+      		console.log("注册之后的返回值", response)
+      		this.$message({
+      			message: '注册新用户成功',
+      			type: 'success'
+      		});
+      		this.$router.push({ path: this.redirect || '/', query: this.otherQuery }); // 跳转到登录页面
+      	}).catch(error => {
+      		console.log(error)
+      		this.$message({
+      			message: '注册新用户失败',
+      			type: 'error'
+      		});
+      	})
+      }
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {

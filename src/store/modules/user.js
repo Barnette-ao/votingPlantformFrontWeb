@@ -1,14 +1,15 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken, getId, setId, removeId } from '@/utils/auth'
+import { getToken, setToken, removeToken, getId, setId, removeId, setUserName,getUserName} from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
-  name: '',
+  name: getUserName(),
   avatar: '',
   introduction: '',
   roles: [],
-  id: getId()
+  id: getId(),
+  currentUser:''
 }
 
 const mutations = {
@@ -29,6 +30,18 @@ const mutations = {
   },
   SET_ID: (state, id) => {
     state.id = id
+  },
+  userStatus: (state, user) => {
+  	if (user) {
+  		state.currentUser = user
+  		//    state.isLogin = true
+  	} else if (user == null) {
+  		//退出的时候清空sessionStorage里的东西
+  		sessionStorage.setItem('userName', null);
+  		//  sessionStorage.setItem('userToke','');
+  		state.currentUser = null;
+  		//  state.isLogin = false;
+  	}
   }
 }
 
@@ -83,7 +96,7 @@ const actions = {
   // user logout
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      logout(state).then(() => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         removeToken()
@@ -108,6 +121,18 @@ const actions = {
       removeToken()
       resolve()
     })
+  },
+
+  setUser({
+  	commit
+  }, user) {
+  	return new Promise(resolve => {
+  		commit('userStatus', user)
+  		// console.log("@@", user)
+  		setUserName(user)
+  		// console.log("@@", this.$store.state.user.currentUser)
+  		resolve()
+  	})
   },
 
   // dynamically modify permissions

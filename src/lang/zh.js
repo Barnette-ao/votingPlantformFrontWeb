@@ -73,8 +73,15 @@ export default {
     size: '布局大小'
   },
   login: {
+<<<<<<< HEAD
     title: '系统登录',
+    registTitle:'系统注册',
+    confirmPassword:'确认密码',
+=======
+    title: '后台管理系统登录',
+>>>>>>> ae799dfee65dfa049c08578c9fe2da0108acb6d6
     logIn: '登录',
+    regist:'新用户？注册',
     username: '账号',
     password: '密码',
     any: '随便填',

@@ -1,5 +1,9 @@
 module.exports = {
-  title: 'Vue Element Admin',
+<<<<<<< HEAD
+  title: '投票计算平台',
+=======
+  title: '投票计算平台后台管理系统',
+>>>>>>> ae799dfee65dfa049c08578c9fe2da0108acb6d6
 
   /**
    * @type {boolean} true | false

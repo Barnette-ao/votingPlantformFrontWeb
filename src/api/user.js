@@ -16,10 +16,11 @@ export function getInfo(state) {
   })
 }
 
-export function logout() {
+export function logout(state) {
   return request({
-    url: '/vue-element-admin/user/logout',
-    method: 'post'
+    url: '/admins/logout',
+    method: 'post',
+    params: { access_token:state.token }
   })
 }
 
@@ -69,5 +70,13 @@ export function editUserInfo(state,data) {
     method: 'patch',
     params: { access_token:state.token },
     data
+  })
+}
+
+export function getUserVotingRulesListCount(id,query) {
+  return request({
+    url: '/admins/'+ id +'/votingRules/count',
+    method: 'get',
+    params: query
   })
 }
